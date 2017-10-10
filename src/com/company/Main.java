@@ -1,4 +1,5 @@
 package com.company;
+
 import java.net.*;
 import java.io.*;
 
@@ -10,28 +11,15 @@ public class Main {
         try {
             InetAddress ipAddress = InetAddress.getByName(address);
             Socket socket = new Socket(ipAddress, serverPort);
-            System.out.println("Yes! I just got hold of the program.");
+            System.out.println("Connected to server. Game started!");
 
             InputStream sin = socket.getInputStream();
             OutputStream sout = socket.getOutputStream();
 
             DataInputStream in = new DataInputStream(sin);
             DataOutputStream out = new DataOutputStream(sout);
+            Game.Start(in, out);
 
-            BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
-            String line = null;
-            System.out.println("Type in something and press enter. Will send it to the server and tell ya what it thinks.");
-            System.out.println();
-
-            while (true) {
-                line = keyboard.readLine();
-                System.out.println("Sending this line to the server...");
-                out.writeUTF(line);
-                out.flush();
-                line = in.readUTF();
-                System.out.println("The server was very polite. It sent me this : " + line);
-                System.out.println();
-            }
         } catch (Exception x) {
             x.printStackTrace();
         }
