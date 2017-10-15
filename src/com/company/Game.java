@@ -4,47 +4,81 @@ import java.io.*;
 
 import com.google.gson.*;
 
-public class Game {
-    public static void Start(DataInputStream in, DataOutputStream out) {
-        Gson gson = new Gson();
-        int[][] board;
-        BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
+class Game {
+    private static BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
+    private static Gson gson = new Gson();
+    private static int[][] board;
+    static boolean yourTurn;
+    static String name;
+
+    static void Start(DataInputStream in, DataOutputStream out) {
         String response;
         String input;
-        while (true) {
-            try {
+        try {
+            System.out.println("Choose your username:");
+            name = keyboard.readLine();
+            out.writeUTF(gson.toJson(name));
+            System.out.println("Create your password:");
+            input = keyboard.readLine();
+            out.writeUTF(gson.toJson(input));
+            out.flush();
+            System.out.println("Welcome, " + name + "!");
+
+            while (true) {
+                board = gson.fromJson(in.readUTF(), int[][].class);
+                DrawBoard();
                 response = in.readUTF();
-                board = gson.fromJson(response, int[][].class);
-                char rowName = 'A';
-                for (int i = 0; i < 8; i++) {
-                    System.out.print(rowName++ + " ");
-                    for (int j = -1; j < 8; j++)
-                        if (j == -1)
-                            System.out.print((j + 1) + " ");
-                        else
-                            switch (board[i][j]) {
-                                case 0:
-                                    System.out.print("  ");
-                                case 1:
-                                    System.out.print("w ");
-                                case -1:
-                                    System.out.print("b ");
-                                case 2:
-                                    System.out.print("W ");
-                                case -2:
-                                    System.out.print("B ");
-                            }
-                    System.out.println("");
+                StringParser.ParseMessage(gson.fromJson(response, String.class));
+                if (response.equals("won") || response.equals("lost")) break;
+                if (yourTurn) {
+                    input = keyboard.readLine();
+                    int[] turn = StringParser.ParseInput(input);
+                    out.writeUTF(gson.toJson(turn));
+                    out.flush();
+                    yourTurn = false;
                 }
-                System.out.println("Enter your turn with 'from' and 'to', like a2c3");
-                input = keyboard.readLine();
-                int[] turn = (input.length() == 4) ? FieldParser.ParseInput(input) : new int[]{-1, -1, -1, -1};
-                out.writeUTF(gson.toJson(turn));
-                out.flush();
-                System.out.println("Waiting for your opponent's turn");
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+        } catch (IOException x) {
+            System.out.println("Connection error. Try restarting the game");
         }
+    }
+
+    private static void DrawBoard() {
+        PrintHeader();
+        char rowName = 'H';
+        for (int i = 0; i < 8; i++) {
+            System.out.print(rowName + "  ");
+            for (int j = 0; j < 8; j++)
+                switch (board[i][j]) {
+                    case 0:
+                        System.out.print("  ");
+                        break;
+                    case 1:
+                        System.out.print("w ");
+                        break;
+                    case -1:
+                        System.out.print("b ");
+                        break;
+                    case 2:
+                        System.out.print("W ");
+                        break;
+                    case -2:
+                        System.out.print("B ");
+                        break;
+                }
+            System.out.print(" " + rowName--);
+            System.out.println("");
+        }
+        PrintHeader();
+        System.out.println("");
+    }
+
+    private static void PrintHeader() {
+        for (int i = 0; i <= 8; i++)
+            if (i == 0)
+                System.out.print("   ");
+            else
+                System.out.print(i + " ");
+        System.out.println("");
     }
 }
