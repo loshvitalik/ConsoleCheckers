@@ -1,6 +1,8 @@
 package com.company;
 
 import java.io.*;
+import java.net.InetAddress;
+import java.net.Socket;
 
 import com.google.gson.*;
 
@@ -10,37 +12,35 @@ class Game {
     private static int[][] board;
     static boolean yourTurn;
     static String name = "";
-    private static String password = "";
 
-    static void Start(DataInputStream in, DataOutputStream out) {
+    static void Start(InetAddress ipAddress, int serverPort) {
         String response;
         String input;
         try {
             System.out.println("Choose your username:");
             name = keyboard.readLine();
-            System.out.println("Create your password:");
-            password = keyboard.readLine();
-            System.out.println("Welcome, " + name + "!");
+            System.out.println("Welcome, " + name + "! Wait for your opponent to connect.");
 
             while (true) {
+                Socket socket = new Socket(ipAddress, serverPort);
+                DataInputStream in = new DataInputStream(socket.getInputStream());
+                DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+                out.writeUTF(gson.toJson(name));
+                out.flush();
                 board = gson.fromJson(in.readUTF(), int[][].class);
                 DrawBoard();
-                response = in.readUTF();
-                StringParser.ParseMessage(gson.fromJson(response, String.class));
+                response = gson.fromJson(in.readUTF(), String.class);
+                StringParser.ParseMessage(response);
                 if (response.equals("won") || response.equals("lost")) break;
                 if (yourTurn) {
                     input = keyboard.readLine();
                     int[] turn = StringParser.ParseInput(input);
-                    out.writeUTF(gson.toJson(name));
-                    out.flush();
-                    out.writeUTF(gson.toJson(password));
-                    out.flush();
                     out.writeUTF(gson.toJson(turn));
                     out.flush();
                     yourTurn = false;
                 }
             }
-        } catch (IOException x) {
+        } catch (Exception x) {
             System.out.println("Connection error. Try restarting the game");
         }
     }

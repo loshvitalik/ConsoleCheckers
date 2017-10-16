@@ -15,11 +15,11 @@ class StringParser {
             case "wait":
                 System.out.println("Waiting for your opponent's turn");
                 break;
-            case "won":
-                System.out.println("You won! Congratulations, " + Game.name + "!");
+            case "whites_won":
+                System.out.println("Whites won. Congratulations!");
                 break;
-            case "lost":
-                System.out.println("You lost. Try again!");
+            case "blacks_won":
+                System.out.println("Blacks won. Congratulations!");
                 break;
             default:
                 System.out.println(message);

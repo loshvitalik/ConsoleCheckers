@@ -8,7 +8,7 @@ public class Main {
         System.out.println("Welcome to Checkers (c) loshvitalik & MrBlacktop, 2017");
 
         String address = "127.0.0.1";
-        int serverPort = 5554;
+        int serverPort = 5555;
 
         try {
             BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
@@ -21,11 +21,7 @@ public class Main {
             if (!(input.equals(""))) serverPort = Integer.parseInt(input);
 
             InetAddress ipAddress = InetAddress.getByName(address);
-            Socket socket = new Socket(ipAddress, serverPort);
-            System.out.println("Connected to server");
-            DataInputStream in = new DataInputStream(socket.getInputStream());
-            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-            Game.Start(in, out);
+            Game.Start(ipAddress, serverPort);
 
         } catch (Exception x) {
             System.out.println("Connection error. Try restarting the game");
