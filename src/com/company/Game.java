@@ -9,7 +9,8 @@ class Game {
     private static Gson gson = new Gson();
     private static int[][] board;
     static boolean yourTurn;
-    static String name;
+    static String name = "";
+    private static String password = "";
 
     static void Start(DataInputStream in, DataOutputStream out) {
         String response;
@@ -17,11 +18,8 @@ class Game {
         try {
             System.out.println("Choose your username:");
             name = keyboard.readLine();
-            out.writeUTF(gson.toJson(name));
             System.out.println("Create your password:");
-            input = keyboard.readLine();
-            out.writeUTF(gson.toJson(input));
-            out.flush();
+            password = keyboard.readLine();
             System.out.println("Welcome, " + name + "!");
 
             while (true) {
@@ -33,6 +31,10 @@ class Game {
                 if (yourTurn) {
                     input = keyboard.readLine();
                     int[] turn = StringParser.ParseInput(input);
+                    out.writeUTF(gson.toJson(name));
+                    out.flush();
+                    out.writeUTF(gson.toJson(password));
+                    out.flush();
                     out.writeUTF(gson.toJson(turn));
                     out.flush();
                     yourTurn = false;
