@@ -5,7 +5,7 @@ import java.io.*;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Welcome to Checkers! (c) loshvitalik & MrBlacktop, 2017");
+        System.out.println("Welcome to Checkers (c) loshvitalik & MrBlacktop, 2017");
 
         String address = "127.0.0.1";
         int serverPort = 5554;

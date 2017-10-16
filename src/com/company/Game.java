@@ -45,13 +45,13 @@ class Game {
 
     private static void DrawBoard() {
         PrintHeader();
-        char rowName = 'H';
+        System.out.println("   -----------------   ");
         for (int i = 0; i < 8; i++) {
-            System.out.print(rowName + "  ");
+            System.out.print((8 - i) + " | ");
             for (int j = 0; j < 8; j++)
                 switch (board[i][j]) {
                     case 0:
-                        System.out.print("  ");
+                        System.out.print(". ");
                         break;
                     case 1:
                         System.out.print("w ");
@@ -66,19 +66,21 @@ class Game {
                         System.out.print("B ");
                         break;
                 }
-            System.out.print(" " + rowName--);
+            System.out.print("| " + (8 - i));
             System.out.println("");
         }
+        System.out.println("   -----------------   ");
         PrintHeader();
         System.out.println("");
     }
 
     private static void PrintHeader() {
+        char colName = 'a';
         for (int i = 0; i <= 8; i++)
             if (i == 0)
-                System.out.print("   ");
+                System.out.print("    ");
             else
-                System.out.print(i + " ");
-        System.out.println("");
+                System.out.print(colName++ + " ");
+            System.out.println();
     }
 }
