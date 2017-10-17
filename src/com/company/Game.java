@@ -11,14 +11,16 @@ class Game {
     private static Gson gson = new Gson();
     private static int[][] board;
     static boolean yourTurn;
-    static String name = "";
 
     static void Start(InetAddress ipAddress, int serverPort) {
+        String name = "";
         String response;
         String input;
         try {
-            System.out.println("Choose your username:");
-            name = keyboard.readLine();
+            while (name.equals("")) {
+                System.out.println("Choose your username:");
+                name = keyboard.readLine();
+            }
             System.out.println("Welcome, " + name + "! Wait for your opponent to connect.");
 
             while (true) {
